@@ -1,3 +1,4 @@
+import type { WatermarkShape } from '../type';
 import Button from './Button';
 
 // Watermark component with subtle distortion
@@ -7,7 +8,7 @@ const Watermark = ({
   rotation,
   scale,
 }: {
-  shape: 'triangle' | 'square' | 'circle';
+  shape: Exclude<WatermarkShape, null>;
   opacity?: number;
   rotation: number;
   scale: number;
@@ -23,14 +24,12 @@ const Watermark = ({
     circle: '●',
   };
 
-  return content[shape] ? (
+  return content?.[shape] ? (
     <div style={style} className="text-white text-2xl select-none">
       {content[shape]}
     </div>
   ) : null;
 };
-
-type WatermarkShape = 'triangle' | 'square' | 'circle' | null;
 
 interface GridCell {
   id: number;

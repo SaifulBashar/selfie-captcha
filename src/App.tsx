@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Button from './components/Button';
 import { Result } from './components/Result';
 import { GridSelection } from './components/GridSelection';
+import type { GridCell, WatermarkShape } from './type';
 
 function getRandomPosition(videoWidth: number, videoHeight: number, rectSize: number) {
   const maxX = Math.max(0, videoWidth - rectSize);
@@ -14,15 +15,6 @@ function getRandomPosition(videoWidth: number, videoHeight: number, rectSize: nu
 }
 
 const SQUARE_SIZE = 150;
-type WatermarkShape = 'triangle' | 'square' | 'circle' | null;
-
-interface GridCell {
-  id: number;
-  watermark: WatermarkShape;
-  selected: boolean;
-  rotation: number;
-  scale: number;
-}
 
 function App() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -38,12 +30,13 @@ function App() {
   const [lockedSquarePos, setLockedSquarePos] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [videoDimensions, setVideoDimensions] = useState({ width: 1280, height: 720 });
   const [validationResult, setValidationResult] = useState<'success' | 'failed' | null>(null);
-  // Generate 5x5 grid with random watermarks
+
+  //5x5 grid
   const generateGrid = () => {
     const shapes: WatermarkShape[] = ['triangle', 'square', 'circle'];
     const cells: GridCell[] = [];
 
-    // Create 25 cells (5x5)
+    //25 cells (5x5)
     for (let i = 0; i < 25; i++) {
       cells.push({
         id: i,
@@ -120,16 +113,17 @@ function App() {
     const imageData = canvas.toDataURL('image/png');
 
     // Get the actual rendered video dimensions for proper scaling
-    const rect = videoRef.current.getBoundingClientRect();
-    const scaleX = videoWidth / rect.width;
-    const scaleY = videoHeight / rect.height;
+    const videoElementRect = videoRef.current.getBoundingClientRect();
+
+    const scaleX = videoWidth / videoElementRect.width;
+    const scaleY = videoHeight / videoElementRect.height;
 
     // Store the locked square position with scaling
     const scaledSquarePos = {
       x: rectPos.x * scaleX,
       y: rectPos.y * scaleY,
-      width: SQUARE_SIZE * scaleX,
-      height: SQUARE_SIZE * scaleY,
+      width: SQUARE_SIZE,
+      height: SQUARE_SIZE,
     };
 
     // Store video dimensions for later use
@@ -203,8 +197,52 @@ function App() {
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const mainDisplay = {
+    grid: (
+      <GridSelection
+        capturedImage={capturedImage}
+        gridCells={gridCells}
+        targetShape={targetShape}
+        lockedSquarePos={lockedSquarePos}
+        videoDimensions={videoDimensions}
+        onToggleCell={toggleCellSelection}
+        onValidate={handleValidate}
+      />
+    ),
+    result: <Result handleRetry={handleRetry} validationResult={validationResult!} />,
+    camera: (
+      <>
+        <div className="relative w-full overflow-hidden rounded-lg bg-gray-900">
+          <video ref={videoRef} autoPlay playsInline className="w-full h-full" />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              top: rectPos.y,
+              left: rectPos.x,
+              width: SQUARE_SIZE,
+              height: SQUARE_SIZE,
+              border: '3px solid #00ff00',
+              boxShadow: '0 0 10px rgba(0, 255, 0, 0.5)',
+              transition: 'top 0.3s ease-in-out, left 0.3s ease-in-out',
+            }}
+          />
+          {!hasPermission && !error && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+              <p className="text-white">Requesting camera access...</p>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <Button variant="primary" size="lg" fullWidth onClick={handleContinue}>
+            Continue
+          </Button>
+        </div>
+      </>
+    ),
+  };
 
   return (
     <section className="max-w-3xl mx-auto mt-8 px-4">
@@ -217,52 +255,7 @@ function App() {
           </div>
         )}
 
-        {step === 'camera' && (
-          <>
-            <div className="relative w-full overflow-hidden rounded-lg bg-gray-900">
-              <video ref={videoRef} autoPlay playsInline className="w-full h-full" />
-              <div
-                className="absolute pointer-events-none"
-                style={{
-                  top: rectPos.y,
-                  left: rectPos.x,
-                  width: SQUARE_SIZE,
-                  height: SQUARE_SIZE,
-                  border: '3px solid #00ff00',
-                  boxShadow: '0 0 10px rgba(0, 255, 0, 0.5)',
-                  transition: 'top 0.3s ease-in-out, left 0.3s ease-in-out',
-                }}
-              />
-              {!hasPermission && !error && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-                  <p className="text-white">Requesting camera access...</p>
-                </div>
-              )}
-            </div>
-
-            <div className="mt-6 flex justify-center">
-              <Button variant="primary" size="lg" fullWidth onClick={handleContinue}>
-                Continue
-              </Button>
-            </div>
-          </>
-        )}
-
-        {step === 'grid' && (
-          <GridSelection
-            capturedImage={capturedImage}
-            gridCells={gridCells}
-            targetShape={targetShape}
-            lockedSquarePos={lockedSquarePos}
-            videoDimensions={videoDimensions}
-            onToggleCell={toggleCellSelection}
-            onValidate={handleValidate}
-          />
-        )}
-
-        {step === 'result' && (
-          <Result handleRetry={handleRetry} validationResult={validationResult!} />
-        )}
+        <div>{mainDisplay[step] ?? null}</div>
       </div>
     </section>
   );
