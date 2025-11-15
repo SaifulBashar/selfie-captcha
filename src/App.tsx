@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Result } from './components/Result';
 import { GridSelection } from './components/GridSelection';
@@ -7,6 +7,7 @@ import useCamera from './hooks/useCamera';
 import { Camera } from './components/Camera';
 import { SQUARE_SIZE } from './constants';
 import { generateGrid } from './utils/generateGrid';
+import Button from './components/Button';
 
 function getRandomPosition(videoWidth: number, videoHeight: number, rectSize: number) {
   const maxX = Math.max(0, videoWidth - rectSize);
@@ -19,6 +20,8 @@ function getRandomPosition(videoWidth: number, videoHeight: number, rectSize: nu
 }
 
 function App() {
+  const [attempt, setAttempt] = useState(0);
+  const validationButtonRef = useRef<HTMLButtonElement>(null);
   const { error, hasPermission, videoRef } = useCamera();
   const [boxPosition, setBoxPosition] = useState({ x: 50, y: 50 });
   const [isMoving, setIsMoving] = useState(true);
@@ -55,6 +58,17 @@ function App() {
     const result =
       allCorrectSelected && noIncorrectSelected && correctCells.length > 0 ? 'success' : 'failed';
 
+    if (attempt < 5 && result === 'failed') {
+      setAttempt((prev) => prev + 1);
+      //add shake animation to validation button
+      if (validationButtonRef.current) {
+        validationButtonRef.current.classList.add('animate-shake');
+        setTimeout(() => {
+          validationButtonRef.current?.classList.remove('animate-shake');
+        }, 500);
+      }
+      return;
+    }
     setValidationResult(result);
     setStep('result');
   };
@@ -140,7 +154,19 @@ function App() {
         lockedSquarePos={lockedSquarePos}
         videoDimensions={videoDimensions}
         onToggleCell={toggleCellSelection}
-        onValidate={handleValidate}
+        renderValidate={() => {
+          return (
+            <Button
+              ref={validationButtonRef}
+              variant="primary"
+              size="lg"
+              fullWidth
+              onClick={handleValidate}
+            >
+              Validate
+            </Button>
+          );
+        }}
       />
     ),
     result: <Result handleRetry={handleRetry} validationResult={validationResult!} />,

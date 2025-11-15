@@ -5,6 +5,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   fullWidth?: boolean;
+  ref?: React.Ref<HTMLButtonElement>; // Optional: explicit ref prop
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -15,6 +16,7 @@ const Button: React.FC<ButtonProps> = ({
   fullWidth = false,
   className = '',
   disabled,
+  ref,
   ...props
 }) => {
   const baseStyles =
@@ -39,7 +41,7 @@ const Button: React.FC<ButtonProps> = ({
   const combinedClassName = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${widthStyle} ${className}`;
 
   return (
-    <button className={combinedClassName} disabled={disabled || isLoading} {...props}>
+    <button ref={ref} className={combinedClassName} disabled={disabled || isLoading} {...props}>
       {isLoading ? (
         <>
           <svg

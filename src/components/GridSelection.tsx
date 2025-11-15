@@ -47,7 +47,7 @@ interface GridSelectionProps {
   lockedSquarePos: { x: number; y: number; width: number; height: number };
   videoDimensions: { width: number; height: number };
   onToggleCell: (cellId: number) => void;
-  onValidate: () => void;
+  renderValidate: () => React.ReactNode;
 }
 
 export const GridSelection = ({
@@ -57,7 +57,7 @@ export const GridSelection = ({
   lockedSquarePos,
   videoDimensions,
   onToggleCell,
-  onValidate,
+  renderValidate,
 }: GridSelectionProps) => {
   const getShapeLabel = (shape?: WatermarkShape) => {
     if (shape === 'triangle') return 'triangles (▲)';
@@ -114,11 +114,7 @@ export const GridSelection = ({
         </div>
       </div>
 
-      <div className="mt-6 flex justify-center">
-        <Button variant="primary" size="lg" fullWidth onClick={onValidate}>
-          Validate
-        </Button>
-      </div>
+      <div className="mt-6 flex justify-center">{renderValidate()}</div>
     </>
   );
 };

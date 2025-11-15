@@ -34,5 +34,20 @@ export const generateGrid = () => {
   const targetShape = WATERMARK_SHAPES[Math.floor(Math.random() * WATERMARK_SHAPES.length)];
   const targetColor = WATERMARK_COLORS[Math.floor(Math.random() * WATERMARK_COLORS.length)];
 
+  //filter to ensure at least one cell has the target shape and color
+  const hasTarget = cells.some(
+    (cell) => cell.watermark === targetShape && cell.color === targetColor
+  );
+
+  if (!hasTarget) {
+    //if any target shape do not have targetColor, assign first occurrence
+    for (const cell of cells) {
+      if (cell.watermark === targetShape) {
+        cell.color = targetColor;
+        break;
+      }
+    }
+  }
+
   return { cells, target: { shape: targetShape, color: targetColor } };
 };
