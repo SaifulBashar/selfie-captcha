@@ -1,4 +1,5 @@
-import type { WatermarkShape } from '../type';
+import { COLOR_MAP } from '../constants';
+import type { GridCell, WatermarkColor, WatermarkShape } from '../type';
 import Button from './Button';
 
 // Watermark component with subtle distortion
@@ -7,17 +8,22 @@ const Watermark = ({
   opacity = 1,
   rotation,
   scale,
+  color,
 }: {
   shape: Exclude<WatermarkShape, null>;
   opacity?: number;
   rotation: number;
   scale: number;
+  color: WatermarkColor | null;
 }) => {
-  const style = {
+  const style: React.CSSProperties = {
     transform: `rotate(${rotation}deg) scale(${scale})`,
     opacity,
     filter: 'blur(0.5px)',
   };
+  if (color) {
+    style.color = COLOR_MAP[color];
+  }
   const content = {
     triangle: '▲',
     square: '■',
@@ -31,18 +37,13 @@ const Watermark = ({
   ) : null;
 };
 
-interface GridCell {
-  id: number;
-  watermark: WatermarkShape;
-  selected: boolean;
-  rotation: number;
-  scale: number;
-}
-
 interface GridSelectionProps {
   capturedImage: string;
   gridCells: GridCell[];
-  targetShape: WatermarkShape;
+  targetShape: {
+    shape: WatermarkShape;
+    color: WatermarkColor;
+  } | null;
   lockedSquarePos: { x: number; y: number; width: number; height: number };
   videoDimensions: { width: number; height: number };
   onToggleCell: (cellId: number) => void;
@@ -58,7 +59,7 @@ export const GridSelection = ({
   onToggleCell,
   onValidate,
 }: GridSelectionProps) => {
-  const getShapeLabel = (shape: WatermarkShape) => {
+  const getShapeLabel = (shape?: WatermarkShape) => {
     if (shape === 'triangle') return 'triangles (▲)';
     if (shape === 'square') return 'squares (■)';
     if (shape === 'circle') return 'circles (●)';
@@ -69,7 +70,10 @@ export const GridSelection = ({
     <>
       <div className="mb-6">
         <p className="text-center text-lg font-semibold mb-4">
-          Select all cells containing {getShapeLabel(targetShape)}
+          Select all cells containing{' '}
+          <span style={{ color: targetShape ? COLOR_MAP[targetShape.color] : '' }}>
+            {getShapeLabel(targetShape?.shape)}
+          </span>
         </p>
 
         <div className="relative w-full rounded-lg overflow-hidden">
@@ -97,7 +101,12 @@ export const GridSelection = ({
                 `}
               >
                 {cell.watermark && (
-                  <Watermark shape={cell.watermark} rotation={cell.rotation} scale={cell.scale} />
+                  <Watermark
+                    color={cell.color}
+                    shape={cell.watermark}
+                    rotation={cell.rotation}
+                    scale={cell.scale}
+                  />
                 )}
               </div>
             ))}

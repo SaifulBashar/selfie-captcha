@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Result } from './components/Result';
 import { GridSelection } from './components/GridSelection';
-import type { GridCell, WatermarkShape } from './type';
+import type { GridCell, WatermarkColor, WatermarkShape } from './type';
 import useCamera from './hooks/useCamera';
 import { Camera } from './components/Camera';
 import { SQUARE_SIZE } from './constants';
@@ -25,7 +25,10 @@ function App() {
   const [capturedImage, setCapturedImage] = useState<string>('');
   const [step, setStep] = useState<'camera' | 'grid' | 'result'>('camera');
   const [gridCells, setGridCells] = useState<GridCell[]>([]);
-  const [targetShape, setTargetShape] = useState<WatermarkShape>(null);
+  const [targetShape, setTargetShape] = useState<{
+    shape: WatermarkShape;
+    color: WatermarkColor;
+  } | null>(null);
   const [lockedSquarePos, setLockedSquarePos] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [videoDimensions, setVideoDimensions] = useState({ width: 1280, height: 720 });
   const [validationResult, setValidationResult] = useState<'success' | 'failed' | null>(null);
@@ -37,6 +40,7 @@ function App() {
   };
 
   const handleValidate = () => {
+    if (!targetShape) return;
     const correctCells = gridCells.filter(
       (cell) => cell.watermark === targetShape.shape && cell.color === targetShape.color
     );

@@ -1,4 +1,4 @@
-import { CELL_COUNT } from '../constants';
+import { CELL_COUNT, WATERMARK_COLORS, WATERMARK_SHAPES } from '../constants';
 import type { GridCell, WatermarkShape } from '../type';
 
 export const generateGrid = () => {
@@ -13,6 +13,7 @@ export const generateGrid = () => {
       selected: false,
       rotation: Math.random() * 20 - 10, // -10 to 10 degrees
       scale: 0.9 + Math.random() * 0.2, // 0.9 to 1.1
+      color: null,
     });
   }
 
@@ -23,10 +24,15 @@ export const generateGrid = () => {
   for (let i = 0; i < cellsToMark; i++) {
     const cellIndex = shuffledIndices[i];
     const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+    const randomColor = WATERMARK_COLORS[Math.floor(Math.random() * WATERMARK_COLORS.length)];
+
     cells[cellIndex].watermark = randomShape;
+    cells[cellIndex].color = randomColor;
   }
 
-  const target = shapes[Math.floor(Math.random() * shapes.length)];
+  // Select random target shape and color combination
+  const targetShape = WATERMARK_SHAPES[Math.floor(Math.random() * WATERMARK_SHAPES.length)];
+  const targetColor = WATERMARK_COLORS[Math.floor(Math.random() * WATERMARK_COLORS.length)];
 
-  return { cells, target };
+  return { cells, target: { shape: targetShape, color: targetColor } };
 };
