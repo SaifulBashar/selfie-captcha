@@ -1,0 +1,4 @@
+const SQUARE_SIZE = 150;
+const CELL_COUNT = 25;
+
+export { SQUARE_SIZE, CELL_COUNT };

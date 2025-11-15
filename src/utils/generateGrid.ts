@@ -1,0 +1,32 @@
+import { CELL_COUNT } from '../constants';
+import type { GridCell, WatermarkShape } from '../type';
+
+export const generateGrid = () => {
+  const shapes: WatermarkShape[] = ['triangle', 'square', 'circle'];
+  const cells: GridCell[] = [];
+
+  //25 cells (5x5)
+  for (let i = 0; i < CELL_COUNT; i++) {
+    cells.push({
+      id: i,
+      watermark: null,
+      selected: false,
+      rotation: Math.random() * 20 - 10, // -10 to 10 degrees
+      scale: 0.9 + Math.random() * 0.2, // 0.9 to 1.1
+    });
+  }
+
+  // Randomly select half of the cells (12-13 cells) to have watermarks
+  const cellsToMark = Math.floor(cells.length / 2);
+  const shuffledIndices = [...Array(CELL_COUNT).keys()].sort(() => Math.random() - 0.5);
+
+  for (let i = 0; i < cellsToMark; i++) {
+    const cellIndex = shuffledIndices[i];
+    const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+    cells[cellIndex].watermark = randomShape;
+  }
+
+  const target = shapes[Math.floor(Math.random() * shapes.length)];
+
+  return { cells, target };
+};
