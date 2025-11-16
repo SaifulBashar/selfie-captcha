@@ -1,5 +1,5 @@
 import { CELL_COUNT, WATERMARK_COLORS, WATERMARK_SHAPES } from '../constants';
-import type { GridCell, WatermarkShape } from '../type';
+import type { GridCell } from '../type';
 /**
  * Generates a 5x5 grid of cells with random watermarks for the CAPTCHA challenge.
  *
@@ -13,7 +13,7 @@ import type { GridCell, WatermarkShape } from '../type';
  *   - target: The shape and color to find
  */
 export const generateGrid = () => {
-  const shapes: WatermarkShape[] = ['triangle', 'square', 'circle'];
+  const shapes = WATERMARK_SHAPES;
   const cells: GridCell[] = [];
 
   //25 cells (5x5)

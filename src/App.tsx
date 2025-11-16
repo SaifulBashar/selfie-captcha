@@ -7,19 +7,9 @@ import { Camera } from './components/Camera';
 import { ATTEMPT_LIMIT, SQUARE_SIZE } from './constants';
 import { generateGrid } from './utils/generateGrid';
 import Button from './components/Button';
+import { getRandomPosition } from './utils/getRandomPosition';
 
-function getRandomPosition(videoWidth: number, videoHeight: number, boxSize: number) {
-  const maxX = Math.max(0, videoWidth - boxSize);
-  const maxY = Math.max(0, videoHeight - boxSize);
-
-  // Generate random coordinates within valid bounds
-  const x = Math.random() * maxX;
-  const y = Math.random() * maxY;
-
-  return { x, y };
-}
-
-function App() {
+const App = () => {
   const [attempt, setAttempt] = useState(0);
   const validationButtonRef = useRef<HTMLButtonElement>(null);
   const { error, hasPermission, videoRef } = useCamera();
@@ -200,6 +190,6 @@ function App() {
       </div>
     </section>
   );
-}
+};
 
 export default App;
