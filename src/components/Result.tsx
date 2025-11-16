@@ -30,7 +30,7 @@ export const Result = (props: {
             </p>
           </div>
           <div className="mt-8">
-            <Button onClick={props.handleRetry}>Try Again</Button>
+            <Button onClick={props.handleRetry}>Try New</Button>
           </div>
         </>
       ) : (

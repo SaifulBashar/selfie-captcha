@@ -155,9 +155,16 @@ function App() {
         onToggleCell={toggleCellSelection}
         renderValidate={() => {
           return (
-            <Button ref={validationButtonRef} fullWidth onClick={handleValidate}>
-              Validate
-            </Button>
+            <div className="w-full">
+              {attempt > 0 && (
+                <p className="text-center mb-2">
+                  Attempt {attempt} of {ATTEMPT_LIMIT}
+                </p>
+              )}
+              <Button ref={validationButtonRef} fullWidth onClick={handleValidate}>
+                Validate
+              </Button>
+            </div>
           );
         }}
       />
