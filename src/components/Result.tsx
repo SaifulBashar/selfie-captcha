@@ -30,9 +30,7 @@ export const Result = (props: {
             </p>
           </div>
           <div className="mt-8">
-            <Button variant="primary" size="lg" onClick={props.handleRetry}>
-              Try Again
-            </Button>
+            <Button onClick={props.handleRetry}>Try Again</Button>
           </div>
         </>
       ) : (
@@ -59,9 +57,7 @@ export const Result = (props: {
             </p>
           </div>
           <div className="mt-8">
-            <Button variant="primary" size="lg" onClick={props.handleRetry}>
-              Retry
-            </Button>
+            <Button onClick={props.handleRetry}>Retry</Button>
           </div>
         </>
       )}

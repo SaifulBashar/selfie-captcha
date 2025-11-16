@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-
 import { Result } from './components/Result';
 import { GridSelection } from './components/GridSelection';
 import type { GridCell, WatermarkColor, WatermarkShape } from './type';
 import useCamera from './hooks/useCamera';
 import { Camera } from './components/Camera';
-import { SQUARE_SIZE } from './constants';
+import { ATTEMPT_LIMIT, SQUARE_SIZE } from './constants';
 import { generateGrid } from './utils/generateGrid';
 import Button from './components/Button';
 
@@ -58,7 +57,7 @@ function App() {
     const result =
       allCorrectSelected && noIncorrectSelected && correctCells.length > 0 ? 'success' : 'failed';
 
-    if (attempt < 5 && result === 'failed') {
+    if (attempt < ATTEMPT_LIMIT && result === 'failed') {
       setAttempt((prev) => prev + 1);
       //add shake animation to validation button
       if (validationButtonRef.current) {
@@ -156,13 +155,7 @@ function App() {
         onToggleCell={toggleCellSelection}
         renderValidate={() => {
           return (
-            <Button
-              ref={validationButtonRef}
-              variant="primary"
-              size="lg"
-              fullWidth
-              onClick={handleValidate}
-            >
+            <Button ref={validationButtonRef} fullWidth onClick={handleValidate}>
               Validate
             </Button>
           );
