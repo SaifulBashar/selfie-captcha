@@ -1,6 +1,17 @@
 import { CELL_COUNT, WATERMARK_COLORS, WATERMARK_SHAPES } from '../constants';
 import type { GridCell, WatermarkShape } from '../type';
-
+/**
+ * Generates a 5x5 grid of cells with random watermarks for the CAPTCHA challenge.
+ *
+ * - Creates 25 cells with random tilt and size
+ * - Adds watermarks to roughly half the cells
+ * - Picks a target shape and color for the user to find
+ * - Ensures the target always appears at least once
+ *
+ * @returns {Object} Object containing:
+ *   - cells: Array of 25 GridCell objects
+ *   - target: The shape and color to find
+ */
 export const generateGrid = () => {
   const shapes: WatermarkShape[] = ['triangle', 'square', 'circle'];
   const cells: GridCell[] = [];
@@ -34,13 +45,13 @@ export const generateGrid = () => {
   const targetShape = WATERMARK_SHAPES[Math.floor(Math.random() * WATERMARK_SHAPES.length)];
   const targetColor = WATERMARK_COLORS[Math.floor(Math.random() * WATERMARK_COLORS.length)];
 
-  //filter to ensure at least one cell has the target shape and color
+  // Check if target combination exists in the grid
   const hasTarget = cells.some(
     (cell) => cell.watermark === targetShape && cell.color === targetColor
   );
 
   if (!hasTarget) {
-    //if any target shape do not have targetColor, assign first occurrence
+    // If target combination not found, update the first matching shape to have the target color
     for (const cell of cells) {
       if (cell.watermark === targetShape) {
         cell.color = targetColor;

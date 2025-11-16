@@ -8,10 +8,11 @@ import { ATTEMPT_LIMIT, SQUARE_SIZE } from './constants';
 import { generateGrid } from './utils/generateGrid';
 import Button from './components/Button';
 
-function getRandomPosition(videoWidth: number, videoHeight: number, rectSize: number) {
-  const maxX = Math.max(0, videoWidth - rectSize);
-  const maxY = Math.max(0, videoHeight - rectSize);
+function getRandomPosition(videoWidth: number, videoHeight: number, boxSize: number) {
+  const maxX = Math.max(0, videoWidth - boxSize);
+  const maxY = Math.max(0, videoHeight - boxSize);
 
+  // Generate random coordinates within valid bounds
   const x = Math.random() * maxX;
   const y = Math.random() * maxY;
 
@@ -43,23 +44,25 @@ function App() {
 
   const handleValidate = () => {
     if (!targetShape) return;
+    ///Find all cells that match the target shape and color
     const correctCells = gridCells.filter(
       (cell) => cell.watermark === targetShape.shape && cell.color === targetShape.color
     );
     const correctCellIds = new Set(correctCells.map((cell) => cell.id));
 
-    const selectedCells = gridCells.filter((cell) => cell.selected);
-    const selectedCellIds = new Set(selectedCells.map((cell) => cell.id));
+    // Find all cells the user selected
+    const userSelectedCells = gridCells.filter((cell) => cell.selected);
+    const userSelectedCellIds = new Set(userSelectedCells.map((cell) => cell.id));
 
-    const allCorrectSelected = correctCells.every((cell) => selectedCellIds.has(cell.id));
-    const noIncorrectSelected = selectedCells.every((cell) => correctCellIds.has(cell.id));
+    //Passes if: user selected ALL correct cells AND didn't select any wrong cells
+    const allCorrectSelected = correctCells.every((cell) => userSelectedCellIds.has(cell.id));
+    const noIncorrectSelected = userSelectedCells.every((cell) => correctCellIds.has(cell.id));
 
     const result =
       allCorrectSelected && noIncorrectSelected && correctCells.length > 0 ? 'success' : 'failed';
 
     if (attempt < ATTEMPT_LIMIT && result === 'failed') {
       setAttempt((prev) => prev + 1);
-      //add shake animation to validation button
       if (validationButtonRef.current) {
         validationButtonRef.current.classList.add('animate-shake');
         setTimeout(() => {

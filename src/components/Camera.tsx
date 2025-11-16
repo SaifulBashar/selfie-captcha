@@ -1,6 +1,23 @@
 import React from 'react';
 import Button from './Button';
-
+/**
+ * Displays the camera feed with a moving green square overlay.
+ *
+ * - Shows live video from the user's camera
+ * - Displays a moving green square that the user must keep their face in
+ * - Shows a loading message while requesting camera permission
+ * - Provides a button to capture the image and continue
+ *
+ * @param {Object} props - Component props
+ * @param {React.RefObject} props.videoRef - Reference to the video element
+ * @param {Object} props.rectPos - Position of the green square overlay
+ * @param {number} props.rectPos.x - X coordinate in pixels
+ * @param {number} props.rectPos.y - Y coordinate in pixels
+ * @param {number} props.SQUARE_SIZE - Size of the square in pixels
+ * @param {boolean} props.hasPermission - Whether camera permission is granted
+ * @param {string | null} props.error - Error message if camera access failed
+ * @param {Function} props.onContinue - Callback when user clicks the Continue button
+ */
 interface CameraProps {
   videoRef: React.RefObject<HTMLVideoElement | null>;
   rectPos: { x: number; y: number };
