@@ -16,7 +16,8 @@ describe('Camera', () => {
 
   it('renders video element', () => {
     render(<Camera {...defaultProps} />);
-    expect(screen.getByRole('img', { hidden: true })).toBeInTheDocument();
+    const video = document.querySelector('video');
+    expect(video).toBeInTheDocument();
   });
 
   it('renders continue button', () => {
