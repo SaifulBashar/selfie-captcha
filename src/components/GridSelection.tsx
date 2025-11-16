@@ -1,6 +1,5 @@
 import { COLOR_MAP } from '../constants';
 import type { GridCell, WatermarkColor, WatermarkShape } from '../type';
-import Button from './Button';
 
 // Watermark component with subtle distortion
 const Watermark = ({
