@@ -1,5 +1,21 @@
 import React from 'react';
-
+/**
+ * Reusable button component with loading and full-width options.
+ *
+ * - Shows a spinning loader and "Loading..." text when loading
+ * - Disables the button during loading state
+ * - Can stretch to fill full width of container
+ * - Supports all standard HTML button attributes
+ *
+ * @param {Object} props - Component props (extends React.ButtonHTMLAttributes)
+ * @param {React.ReactNode} props.children - Button label or text
+ * @param {boolean} [props.isLoading=false] - Shows loading spinner if true
+ * @param {boolean} [props.fullWidth=false] - Makes button full width if true
+ * @param {string} [props.className=''] - Additional CSS classes to apply
+ * @param {boolean} [props.disabled=false] - Disables the button
+ * @param {React.Ref} [props.ref] - Reference to the button element
+ * @returns {React.ReactElement} A styled button component
+ */
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   fullWidth?: boolean;

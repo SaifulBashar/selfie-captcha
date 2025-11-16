@@ -1,5 +1,13 @@
 import Button from './Button';
-
+/**
+ * - Shows a success message with a checkmark if verification passed
+ * - Shows a failure message with an X icon if verification failed
+ * - Provides a button to retry or start a new attempt
+ *
+ * @param {Object} props - Component props
+ * @param {'success' | 'failed' | null} props.validationResult - The verification result status
+ * @param {Function} props.handleRetry - Callback function when user clicks the button
+ */
 export const Result = (props: {
   validationResult: 'success' | 'failed' | null;
   handleRetry: () => void;

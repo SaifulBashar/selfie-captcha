@@ -1,5 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 
+/**
+ * Hook for managing camera access and video stream.
+ *
+ * - Requests camera permission from the user
+ * - Sets up the video stream with ideal resolution of 1280x720
+ * - Stops the camera stream when component unmounts
+ * - Returns video reference, permission status, and error message if any
+ *
+ * @returns {Object} Object containing:
+ *   - videoRef: Ref to attach to the video element
+ *   - hasPermission: Boolean indicating if camera permission is granted
+ *   - error: Error message if camera access failed
+ */
 const useCamera = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);

@@ -1,7 +1,16 @@
 import { COLOR_MAP } from '../constants';
 import type { GridCell, WatermarkColor, WatermarkShape } from '../type';
 
-// Watermark component with subtle distortion
+/**
+ * Displays a watermark symbol (triangle, square, or circle) with rotation and scale.
+ *
+ * @param {Object} props - Component props
+ * @param {WatermarkShape} props.shape - The shape to display (triangle, square, or circle)
+ * @param {number} [props.opacity=1] - Transparency level from 0 to 1
+ * @param {number} props.rotation - Rotation angle in degrees
+ * @param {number} props.scale - Size multiplier (0.9 to 1.1)
+ * @param {WatermarkColor | null} props.color - Color of the watermark
+ */
 const Watermark = ({
   shape,
   opacity = 1,
@@ -48,7 +57,31 @@ interface GridSelectionProps {
   onToggleCell: (cellId: number) => void;
   renderValidate: () => React.ReactNode;
 }
-
+/**
+ * Displays a 5x5 grid overlay on the captured image for the user to select cells.
+ *
+ * - Shows the captured selfie with a grid on top
+ * - Displays watermarks in each cell
+ * - Highlights selected cells in blue
+ * - Allows users to click cells to toggle selection
+ *
+ * @param {Object} props - Component props
+ * @param {string} props.capturedImage - Base64 encoded image from camera
+ * @param {GridCell[]} props.gridCells - Array of 25 cells with watermark data
+ * @param {Object} props.targetShape - The target shape and color to find
+ * @param {WatermarkShape} props.targetShape.shape - Target shape (triangle, square, circle)
+ * @param {WatermarkColor} props.targetShape.color - Target color
+ * @param {Object} props.lockedSquarePos - Position and size of the grid area
+ * @param {number} props.lockedSquarePos.x - X coordinate in pixels
+ * @param {number} props.lockedSquarePos.y - Y coordinate in pixels
+ * @param {number} props.lockedSquarePos.width - Width in pixels
+ * @param {number} props.lockedSquarePos.height - Height in pixels
+ * @param {Object} props.videoDimensions - Original video dimensions
+ * @param {number} props.videoDimensions.width - Video width in pixels
+ * @param {number} props.videoDimensions.height - Video height in pixels
+ * @param {Function} props.onToggleCell - Callback when a cell is clicked
+ * @param {Function} props.renderValidate - Function to render the validate button
+ */
 export const GridSelection = ({
   capturedImage,
   gridCells,
